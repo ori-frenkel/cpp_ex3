@@ -133,7 +133,7 @@ public:
      */
     double getLoadFactor() const
     {
-        return (_sizeOfArray / _capacityOfArray);
+        return (double(_sizeOfArray) / _capacityOfArray);
     }
 
     /**
