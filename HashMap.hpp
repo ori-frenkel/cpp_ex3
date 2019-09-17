@@ -1,6 +1,6 @@
 #include <vector>
 #include <assert.h>
-
+#include <iostream> // todo : remove this include
 // default hash map size
 const int defaultHashMapCapacity = 16;
 
@@ -75,32 +75,29 @@ public:
      * @param other - other hashMap to copy
      */
     HashMap(const HashMap& other) : _lowerBound(other.getLowerBound()), \
-                                    _upperBound(other.getUpperBound())
+                                    _upperBound(other.getUpperBound()), \
+                                    _capacityOfArray(other.capacity()), \
+                                    _sizeOfArray(other.size())
     {
         /* if current hashMap and other, has different size, than delete the current and allocate
          * new current hashMap with the other size.   */
         int otherCapacity = other.capacity();
-        if(_capacityOfArray != otherCapacity)
+        try
         {
-            delete[] _hashMap;
-            try
-            {
-                _hashMap = new std::vector<std::pair<KeyT, ValueT>>[otherCapacity];
-            }
-            catch (std::bad_alloc)
-            {
-                std::cerr << "Memory allocation failed" << std::endl;
-            }
-            _capacityOfArray = otherCapacity;
+            _hashMap = new std::vector<std::pair<KeyT, ValueT>>[otherCapacity];
+        }
+        catch (std::bad_alloc)
+        {
+            std::cerr << "Memory allocation failed" << std::endl;
         }
 
-        _sizeOfArray = other.size();
-
-        for(int i = 0 ; i < otherCapacity; ++i)
+        for(int i = 0 ; i < _capacityOfArray; ++i)
         {
             std::pair<KeyT, ValueT> pair2 = _hashMap[i];
             _hashMap[i] = std::pair<KeyT, ValueT> (pair2.first, pair2.second);
         }
+
+
 
     }
 
@@ -325,14 +322,255 @@ public:
         for(int i = 0; i < _capacityOfArray; i++)
         {
             _hashMap[i].clear();
-
         }
         _sizeOfArray = 0;
+    }
+
+    /**
+     * overload the operator '='
+     * @param other - other HashMap to 'copy'
+     * @return current HashMap after the operator '=' been done.
+     */
+    HashMap& operator = (const HashMap& other)
+    {
+        /* if current hashMap and other, has different size, than delete the current and allocate
+         * new current hashMap with the other size.   */
+        int otherCapacity = other.capacity();
+        if(_capacityOfArray != otherCapacity)
+        {
+            delete[] _hashMap;
+            try
+            {
+                _hashMap = new std::vector<std::pair<KeyT, ValueT>>[otherCapacity];
+            }
+            catch (std::bad_alloc)
+            {
+                std::cerr << "Memory allocation failed" << std::endl;
+            }
+            _capacityOfArray = otherCapacity;
+        }
+
+        _sizeOfArray = other.size();
+
+        for(int i = 0 ; i < otherCapacity; ++i)
+        {
+            std::pair<KeyT, ValueT> pair2 = _hashMap[i];
+            _hashMap[i] = std::pair<KeyT, ValueT> (pair2.first, pair2.second);
+        }
+
+        _lowerBound = other.getLowerBound();
+        _upperBound = other.getUpperBound();
+        _capacityOfArray = other.capacity();
+        _sizeOfArray = other.size();
+
+        return *this;
+    }
+
+    /**
+     * overload subscript operator - non const version
+     * @param key - the key that we want to find the value of.
+     * @return - nullptr, if the key is invalid, or the value that belong to the key otherwise
+     */
+    HashMap& operator [] (const KeyT& key) noexcept
+    {
+        ValueT *val = nullptr;
+        try
+        {
+            *val = at(key);
+        }
+        catch (std::invalid_argument)
+        {
+            return nullptr;
+        }
+        return at(key);
+
+    }
+
+    /**
+     * overload subscript operator - const version
+     * @param key - the key that we want to find the value of.
+     * @return - nullptr, if the key is invalid, or the value that belong to the key otherwise
+     */
+    HashMap& operator [] (const KeyT& key) const noexcept
+    {
+        const ValueT *val = nullptr;
+        try
+        {
+            *val = at(key);
+        }
+        catch (std::invalid_argument)
+        {
+            return nullptr;
+        }
+        return at(key);
+    }
+
+    bool operator == (const HashMap& other) const
+    {
+        if(_sizeOfArray != other._sizeOfArray)
+        {
+            return false;
+        }
+        iterator p;
+        std::pair<KeyT, ValueT> arrOfAllTheItemsCurr = this->p.getAllThePairs();
+        std::pair<KeyT, ValueT> arrOfAllTheItemsOther = other.p.getAllThePairs();
+        int numOfSamePairs = 0;
+        for(int i = 0; i < _sizeOfArray; ++i)
+        {
+            for(int j = 0; j < _sizeOfArray; j++)
+            {
+                if(arrOfAllTheItemsCurr[i] == arrOfAllTheItemsOther[j])
+                {
+                    ++numOfSamePairs;
+                    break;
+                }
+            }
+        }
+        if(numOfSamePairs == _sizeOfArray)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool operator != (const HashMap& other) const
+    {
+        return !operator==(other);
     }
 
     ~HashMap()
     {
         delete[] _hashMap;
     }
+
+    class iterator
+    {
+    private:
+        std::vector<std::pair<KeyT, ValueT>> *_hashMap;
+
+        // array of all the pairs in the hashMap
+        std::pair<KeyT, ValueT> *_arrOfAllTheItems;
+        // current location in the _arrOfAllTheItems
+        int _currentLocation;
+        int _capacityOfHash;
+
+    public:
+        /**
+         * Constructor of iterator
+         * @param hashMap - the array of vector of pairs that the HashMap uses
+         * @param sizeOfHashMap - The number of pairs in the HashMap
+         * @param capacityOfHash - The Capacity of the HashMap
+         */
+        iterator(std::vector<std::pair<KeyT, ValueT>> *hashMap = nullptr, int sizeOfHashMap = 0, \
+                int capacityOfHash = 0) : _hashMap(hashMap)
+        {
+            int index = 0;
+            _capacityOfHash = capacityOfHash;
+            _arrOfAllTheItems = new std::pair<KeyT, ValueT>[_capacityOfHash];
+            for(int i = 0; i < capacityOfHash; i++)
+            {
+                if(_hashMap[i].size() == 0)
+                {
+                    continue;
+                }
+                for(int j = 0; j < _hashMap[i].size(); j++)
+                {
+                    _arrOfAllTheItems[j] = _hashMap[i][j];
+                }
+            }
+            _currentLocation = 0;
+        };
+
+        /**
+         *
+         * @return - the pair that the iterator is pointing to.
+         */
+        std::pair<KeyT, ValueT>& operator * () const
+        {
+            if(_currentLocation == _capacityOfHash)
+            {
+                return nullptr;
+            }
+            return _arrOfAllTheItems[_currentLocation];
+        }
+
+        /**
+         *
+         * @return - The Address of the pair that the iterator is pointing to.
+         */
+        std::pair<KeyT, ValueT>* operator -> () const
+        {
+            if(_currentLocation == _capacityOfHash)
+            {
+                return nullptr;
+            }
+            return &(_arrOfAllTheItems[_currentLocation]);
+        }
+
+        /**
+         * prefix increment operator - '++i'
+         * @return current iterator after '++'
+         */
+        iterator& operator++()
+        {
+            ++_currentLocation;
+            return *this;
+        }
+
+        /**
+         * postfix increment operator - 'i++'
+         * @return
+         */
+        iterator& operator++(int)
+        {
+            iterator *tmp = *this;
+            ++_currentLocation;
+            return *this;
+        }
+
+        /**
+         *
+         * @param other - other iterator
+         * @return - true, if both iterator pointing to the same pair, false otherwise
+         */
+        bool operator == (iterator const& other) const
+        {
+            if(_currentLocation == _capacityOfHash && other == nullptr)
+            {
+                return true;
+            }
+            return _arrOfAllTheItems[_currentLocation] == \
+                                               other._arrOfAllTheItems[other._currentLocation];
+        }
+
+        /**
+         * overload the operator '!='
+         * @param other - other iterator
+         * @return - false, if both iterator pointing to the same pair, true otherwise
+         */
+        bool operator != (iterator const&other) const
+        {
+            if(_currentLocation == _capacityOfHash && other == nullptr)
+            {
+                return false;
+            }
+            return _arrOfAllTheItems[_currentLocation] != \
+                                               other._arrOfAllTheItems[other._currentLocation];
+        }
+
+        /**
+         * use this as helper function in overload the operator '==' and '!=' in HashMap
+         * @return
+         */
+        std::pair<KeyT, ValueT> *getAllThePairs() const
+        {
+            return _arrOfAllTheItems;
+        }
+
+        ~iterator(){delete[] _arrOfAllTheItems;}
+
+    };
+    iterator begin() {return iterator(_hashMap, _sizeOfArray, _capacityOfArray);}
+    iterator end() { return nullptr;}
 
 };
