@@ -53,12 +53,12 @@ public:
         return _hashMap;
     }
 
-    double& getLowerBound() const
+    const double& getLowerBound() const
     {
         return _lowerBound;
     }
 
-    double& getUpperBound() const
+    const double& getUpperBound() const
     {
         return _upperBound;
     }
@@ -284,9 +284,10 @@ public:
         int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); i++)
         {
-            if((_hashMap[index])[i]->first == key)
+            if((_hashMap[index])[i].first == key)
             {
-                _hashMap->erase(_hashMap[index][i]);
+                _hashMap[index].erase(_hashMap[index].begin() + i);
+                break;
             }
         }
 
