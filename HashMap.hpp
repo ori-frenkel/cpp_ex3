@@ -288,7 +288,7 @@ public:
         }
 
         --_sizeOfArray;
-        if(getLowerBound() > _sizeOfArray)
+        if(getLowerBound() > getLoadFactor())
         {
             rehashing(false);
         }
