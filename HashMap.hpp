@@ -39,13 +39,16 @@ public:
     };
 
     /**
-     * Constructor that gets to vector, and creating hashMap which key[i] -> value[i]
+     * Constructor that gets two vector, and creating hashMap which key[i] -> value[i]
      * @param keysVector
      * @param valueVector
      */
     HashMap(std::vector<KeyT> keysVector, std::vector<ValueT> valueVector) : HashMap()
     {
-
+        for(int i = 0; i < keysVector.size(); i ++)
+        {
+            insert(keysVector[i], valueVector[i]);
+        }
     }
 
     std::vector<std::pair<KeyT, ValueT>>* getHashMap()
