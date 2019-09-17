@@ -45,6 +45,10 @@ public:
      */
     HashMap(std::vector<KeyT> keysVector, std::vector<ValueT> valueVector) : HashMap()
     {
+        if(keysVector.size() != valueVector.size())
+        {
+            throw std::invalid_argument("vector are from different sizes");
+        }
         for(int i = 0; i < keysVector.size(); i ++)
         {
             insert(keysVector[i], valueVector[i]);
