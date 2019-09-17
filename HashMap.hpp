@@ -81,10 +81,9 @@ public:
     {
         /* if current hashMap and other, has different size, than delete the current and allocate
          * new current hashMap with the other size.   */
-        int otherCapacity = other.capacity();
         try
         {
-            _hashMap = new std::vector<std::pair<KeyT, ValueT>>[otherCapacity];
+            _hashMap = new std::vector<std::pair<KeyT, ValueT>>[other.capacity()];
         }
         catch (std::bad_alloc)
         {
@@ -93,11 +92,8 @@ public:
 
         for(int i = 0 ; i < _capacityOfArray; ++i)
         {
-            std::pair<KeyT, ValueT> pair2 = _hashMap[i];
-            _hashMap[i] = std::pair<KeyT, ValueT> (pair2.first, pair2.second);
+            std::copy(other._hashMap[i].begin(), other._hashMap[i].end(), back_inserter(_hashMap[i]));
         }
-
-
 
     }
 
@@ -216,7 +212,7 @@ public:
      * @param key - key
      * @return - true if there is already such key in the HashMap, false otherwise
      */
-    bool containsKey(KeyT key)
+    bool containsKey(KeyT key) const
     {
         int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); i++)
@@ -239,9 +235,9 @@ public:
         int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); i++)
         {
-            if((_hashMap[index])[i]->first == key)
+            if((_hashMap[index])[i].first == key)
             {
-                return _hashMap[index][i]->second;
+                return _hashMap[index][i].second;
             }
         }
 
@@ -312,7 +308,7 @@ public:
         }
 
         int index = _hash(key) & (_capacityOfArray - 1);
-        return static_cast<int>(_hashMap[index]->size());
+        return static_cast<int>(_hashMap[index].size());
     }
 
     /**
@@ -355,8 +351,7 @@ public:
 
         for(int i = 0 ; i < otherCapacity; ++i)
         {
-            std::pair<KeyT, ValueT> pair2 = _hashMap[i];
-            _hashMap[i] = std::pair<KeyT, ValueT> (pair2.first, pair2.second);
+            std::copy(other._hashMap[i].begin(), other._hashMap[i].end(), back_inserter(_hashMap[i]));
         }
 
         _lowerBound = other.getLowerBound();
@@ -413,8 +408,8 @@ public:
             return false;
         }
         iterator p;
-        std::pair<KeyT, ValueT> arrOfAllTheItemsCurr = this->p.getAllThePairs();
-        std::pair<KeyT, ValueT> arrOfAllTheItemsOther = other.p.getAllThePairs();
+        std::pair<KeyT, ValueT> *arrOfAllTheItemsCurr = p.getAllThePairs();
+        std::pair<KeyT, ValueT> arrOfAllTheItemsOther = other.begin().getAllThePairs();
         int numOfSamePairs = 0;
         for(int i = 0; i < _sizeOfArray; ++i)
         {
