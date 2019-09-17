@@ -13,6 +13,7 @@ private:
     int _capacityOfArray;
     int _sizeOfArray;
     std::vector<std::pair<KeyT, ValueT>> *_hashMap;
+    std::hash<KeyT> _hash;
 
 public:
     /**
@@ -172,7 +173,6 @@ public:
 
         try
         {
-            std::hash <KeyT> h;
             std::vector<std::pair<KeyT, ValueT>> * newHashMap = \
                                 new std::vector<std::pair<KeyT, ValueT>>[newCapacity];
 
@@ -180,7 +180,7 @@ public:
             {
                 for(int j = 0; j < _hashMap[i].size(); i++)
                 {
-                    int index = h(_hashMap[i][j].first) & (newCapacity - 1);
+                    int index = _hash(_hashMap[i][j].first) & (newCapacity - 1);
                     newHashMap[index].push_back(\
                         std::pair<KeyT, ValueT> (_hashMap[i][j].first, _hashMap[i][j].second));
                 }
@@ -198,8 +198,8 @@ public:
 
     bool insert(KeyT key, ValueT value)
     {
-        std::hash <KeyT> h;
-        int index = h(key) & (_capacityOfArray - 1);
+
+        int index = _hash(key) & (_capacityOfArray - 1);
 
         // iterate over the vector to check if there is already such key in the hashTable.
         if(containsKey(key))
@@ -221,8 +221,7 @@ public:
      */
     bool containsKey(KeyT key)
     {
-        std::hash <KeyT> h;
-        int index = h(key) & (_capacityOfArray - 1);
+        int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); i++)
         {
             if(_hashMap[index][i].first == key)
@@ -240,7 +239,7 @@ public:
      */
     const ValueT& at(KeyT key) const
     {
-        int index = std::hash<KeyT>(key) & (_capacityOfArray - 1);
+        int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); i++)
         {
             if((_hashMap[index])[i]->first == key)
@@ -260,12 +259,12 @@ public:
      */
     ValueT& at(KeyT key)
     {
-        int index = std::hash<KeyT>(key) & (_capacityOfArray - 1);
+        int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); i++)
         {
-            if((_hashMap[index])[i]->first == key)
+            if((_hashMap[index])[i].first == key)
             {
-                return _hashMap[index][i]->second;
+                return _hashMap[index][i].second;
             }
         }
 
@@ -285,7 +284,7 @@ public:
             return false;
         }
 
-        int index = std::hash<KeyT>(key) & (_capacityOfArray - 1);
+        int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); i++)
         {
             if((_hashMap[index])[i]->first == key)
@@ -314,7 +313,7 @@ public:
             throw std::invalid_argument("bucketSize function must get a valid key");
         }
 
-        int index = std::hash<KeyT>(key) & (_capacityOfArray - 1);
+        int index = _hash(key) & (_capacityOfArray - 1);
         return static_cast<int>(_hashMap[index]->size());
     }
 
