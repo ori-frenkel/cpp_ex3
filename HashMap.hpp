@@ -322,12 +322,12 @@ public:
      */
     void clear()
     {
-        while(!_hashMap->empty())
+        for(int i = 0; i < _capacityOfArray; i++)
         {
-            _hashMap->pop_back();
-            --_sizeOfArray;
+            _hashMap[i].clear();
+
         }
-        assert(_sizeOfArray == 0);
+        _sizeOfArray = 0;
     }
 
     ~HashMap()
