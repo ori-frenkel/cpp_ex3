@@ -171,7 +171,7 @@ public:
 
             for(int i = 0; i < _capacityOfArray; ++i)
             {
-                for(int j = 0; j < _hashMap[i].size(); i++)
+                for(int j = 0; j < _hashMap[i].size(); j++)
                 {
                     int index = _hash(_hashMap[i][j].first) & (newCapacity - 1);
                     newHashMap[index].push_back(\
@@ -367,19 +367,18 @@ public:
      * @param key - the key that we want to find the value of.
      * @return - nullptr, if the key is invalid, or the value that belong to the key otherwise
      */
-    HashMap& operator [] (const KeyT& key) noexcept
+    ValueT& operator [] (const KeyT& key) noexcept
     {
-        ValueT *val = nullptr;
+        ValueT val = nullptr;
         try
         {
-            *val = at(key);
+            val = at(key);
         }
         catch (std::invalid_argument)
         {
-            return nullptr;
+            return val;
         }
         return at(key);
-
     }
 
     /**
@@ -408,8 +407,8 @@ public:
             return false;
         }
         iterator p;
-        std::pair<KeyT, ValueT> *arrOfAllTheItemsCurr = p.getAllThePairs();
-        std::pair<KeyT, ValueT> arrOfAllTheItemsOther = other.begin().getAllThePairs();
+        std::pair<KeyT, ValueT> *arrOfAllTheItemsCurr = begin().getAllThePairs();
+        std::pair<KeyT, ValueT> *arrOfAllTheItemsOther = other.begin().getAllThePairs();
         int numOfSamePairs = 0;
         for(int i = 0; i < _sizeOfArray; ++i)
         {
@@ -483,10 +482,12 @@ public:
          */
         std::pair<KeyT, ValueT>& operator * () const
         {
+            /*
             if(_currentLocation == _capacityOfHash)
             {
                 return nullptr;
             }
+             */
             return _arrOfAllTheItems[_currentLocation];
         }
 
@@ -567,6 +568,7 @@ public:
 
     };
     iterator begin() {return iterator(_hashMap, _sizeOfArray, _capacityOfArray);}
+    iterator begin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray);}
     iterator end() { return nullptr;}
 
 };
