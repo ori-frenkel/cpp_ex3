@@ -381,9 +381,10 @@ public:
         {
             at(key);
         }
-        catch (std::invalid_argument)
+        catch (std::exception)
         {
-             return _hashMap->begin()->second;
+            //std::cerr << _hashMap->begin()->second <<std::endl;
+            return _hashMap->begin()->second;
         }
         return at(key);
     }
@@ -393,7 +394,7 @@ public:
      * @param key - the key that we want to find the value of.
      * @return - random value, if the key is invalid, or the value that belong to the key otherwise
      */
-    HashMap& operator [] (const KeyT& key) const noexcept
+    ValueT& operator [] (const KeyT& key) const noexcept
     {
         try
         {
