@@ -373,18 +373,17 @@ public:
     /**
      * overload subscript operator - non const version
      * @param key - the key that we want to find the value of.
-     * @return - nullptr, if the key is invalid, or the value that belong to the key otherwise
+     * @return - random variable, if the key is invalid, or the value that belong to the key otherwise
      */
     ValueT& operator [] (const KeyT& key) noexcept
     {
-        ValueT val = nullptr;
         try
         {
-            val = at(key);
+            at(key);
         }
         catch (std::invalid_argument)
         {
-            return val;
+             return _hashMap->begin()->second;
         }
         return at(key);
     }
@@ -392,18 +391,17 @@ public:
     /**
      * overload subscript operator - const version
      * @param key - the key that we want to find the value of.
-     * @return - nullptr, if the key is invalid, or the value that belong to the key otherwise
+     * @return - random value, if the key is invalid, or the value that belong to the key otherwise
      */
     HashMap& operator [] (const KeyT& key) const noexcept
     {
-        const ValueT *val = nullptr;
         try
         {
-            *val = at(key);
+            at(key);
         }
         catch (std::invalid_argument)
         {
-            return nullptr;
+            return _hashMap->begin()->second;
         }
         return at(key);
     }
