@@ -456,6 +456,7 @@ public:
         // current location in the _arrOfAllTheItems
         int _currentLocation;
         int _capacityOfHash;
+        int _endLocation = 0;
 
     public:
         /**
@@ -465,7 +466,7 @@ public:
          * @param capacityOfHash - The Capacity of the HashMap
          */
         iterator(std::vector<std::pair<KeyT, ValueT>> *hashMap = nullptr, int sizeOfHashMap = 0, \
-                int capacityOfHash = 0) : _hashMap(hashMap)
+                int capacityOfHash = 0, int currentLocation = 0) : _hashMap(hashMap)
         {
             int index = 0;
             _capacityOfHash = capacityOfHash;
@@ -478,10 +479,16 @@ public:
                 }
                 for(int j = 0; j < _hashMap[i].size(); j++)
                 {
-                    _arrOfAllTheItems[j] = _hashMap[i][j];
+                    _arrOfAllTheItems[index] = _hashMap[i][j];
+                    ++index;
                 }
             }
-            _currentLocation = 0;
+            _currentLocation = currentLocation;
+            if(currentLocation == sizeOfHashMap)
+            {
+                _currentLocation = index;
+            }
+            _endLocation = index;
         };
 
         /**
@@ -540,7 +547,7 @@ public:
          */
         bool operator == (iterator const& other) const
         {
-            if(_currentLocation == _capacityOfHash && other == nullptr)
+            if((_currentLocation == other._currentLocation) && (_currentLocation == _endLocation))
             {
                 return true;
             }
@@ -555,12 +562,7 @@ public:
          */
         bool operator != (iterator const&other) const
         {
-            if(_currentLocation == _capacityOfHash && other == nullptr)
-            {
-                return false;
-            }
-            return _arrOfAllTheItems[_currentLocation] != \
-                                               other._arrOfAllTheItems[other._currentLocation];
+            return !operator==(other);
         }
 
         /**
@@ -577,6 +579,10 @@ public:
     };
     iterator begin() {return iterator(_hashMap, _sizeOfArray, _capacityOfArray);}
     iterator begin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray);}
-    iterator end() { return nullptr;}
+    iterator cbegin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray);}
+    iterator end() { return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray);}
+    iterator end() const{ return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray);}
+    iterator cend() const{ return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray);}
+
 
 };
