@@ -383,8 +383,13 @@ public:
         }
         catch (std::exception)
         {
-            //std::cerr << _hashMap->begin()->second <<std::endl;
-            return _hashMap->begin()->second;
+            for(int i = 0; i < _capacityOfArray; i++)
+            {
+                if(_hashMap[i].size() != 0)
+                {
+                    return _hashMap[i][0].second;
+                }
+            }
         }
         return at(key);
     }
@@ -402,7 +407,13 @@ public:
         }
         catch (std::invalid_argument)
         {
-            return _hashMap->begin()->second;
+            for(int i = 0; i < _capacityOfArray; i++)
+            {
+                if(_hashMap[i].size() != 0)
+                {
+                    return _hashMap[i][0].second;
+                }
+            }
         }
         return at(key);
     }
