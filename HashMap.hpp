@@ -387,7 +387,8 @@ public:
             {
                 if(_hashMap[i].size() != 0)
                 {
-                    return _hashMap[i][0].second;
+                    insert(key, _hashMap[i][0].second);
+                    return at(key);
                 }
             }
         }
