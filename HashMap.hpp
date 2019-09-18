@@ -212,6 +212,7 @@ public:
         {
             rehashing(true);
         }
+        return true;
     }
 
     /**
