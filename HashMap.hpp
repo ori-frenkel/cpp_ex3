@@ -422,7 +422,10 @@ public:
         {
             try
             {
-                other.at(it->first);
+                if(other.at(it->first) != this->at(it->first))
+                {
+                    return false;
+                }
             }
             catch(std::invalid_argument)
             {
