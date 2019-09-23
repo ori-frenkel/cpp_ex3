@@ -411,7 +411,8 @@ public:
 
     bool operator == (const HashMap& other) const
     {
-        if(_sizeOfArray != other._sizeOfArray || _capacityOfArray != other.capacity())
+        if(_sizeOfArray != other._sizeOfArray || _capacityOfArray != other.capacity() || \
+           _lowerBound != other._lowerBound || _upperBound != other._upperBound)
         {
             return false;
         }
@@ -487,6 +488,19 @@ public:
             _endLocation = index;
         };
 
+        iterator(const iterator& other)
+        {
+            _hashMap = other._hashMap;
+            _currentLocation = other._currentLocation;
+            _arrOfAllTheItems = new std::pair<KeyT, ValueT>[other._capacityOfHash];
+            for(int i = 0; i < other._capacityOfHash; i++)
+            {
+                _arrOfAllTheItems[i] = other._arrOfAllTheItems[i];
+            }
+            _currentLocation = other._currentLocation;
+            _endLocation = other._endLocation;
+        }
+
         /**
          *
          * @return - the pair that the iterator is pointing to.
@@ -531,7 +545,7 @@ public:
          */
         iterator& operator++(int)
         {
-            iterator *tmp = *this;
+            iterator tmp = *this;
             ++_currentLocation;
             return *this;
         }
