@@ -4,6 +4,8 @@
 #define INVALID_INPUT "Invalid input"
 #define FAILURE -1
 #define DIGIT "0123456789"
+#define SPAM "SPAM"
+#define NOT_SPAM "NOT_SPAM"
 #include <iostream>
 #include "HashMap.hpp"
 //#include <boost/filesystem.hpp>
@@ -192,13 +194,15 @@ int main(int argc, char* argv[])
     }
     long threshold = std::stoi(argv[gThresholdIndex]);
 
-    if()
-
-
-
-
-
-
-
+    if(threshold <= totalFilePoint)
+    {
+        std::cout << SPAM << std::endl;
+    }
+    else
+    {
+        std::cout << NOT_SPAM << std::endl;
+    }
+    
+    return 0;
 }
 
