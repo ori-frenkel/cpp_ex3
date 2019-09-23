@@ -27,6 +27,10 @@ public:
                                                      _capacityOfArray(defaultHashMapCapacity), \
                                                      _sizeOfArray(0)
     {
+        if(lowerBound >= upperBound || lowerBound <= 0 || upperBound >= 1)
+        {
+            throw std::out_of_range("lowerBound < upperBound and lowerBound > 0 and upperBound <1");
+        }
         try
         {
             _hashMap = new std::vector<std::pair<KeyT, ValueT>>[defaultHashMapCapacity];
@@ -52,6 +56,8 @@ public:
         for(int i = 0; i < keysVector.size(); i ++)
         {
             insert(keysVector[i], valueVector[i]);
+            // override the key - value if exist.
+            at(keysVector[i]) = valueVector[i];
         }
     }
 
@@ -68,12 +74,6 @@ public:
     const double& getUpperBound() const
     {
         return _upperBound;
-    }
-
-    // todo: delete this
-    int getSize()
-    {
-        return static_cast<int>(_hashMap->size());
     }
 
 
@@ -383,14 +383,10 @@ public:
         }
         catch (std::exception)
         {
-            for(int i = 0; i < _capacityOfArray; i++)
-            {
-                if(_hashMap[i].size() != 0)
-                {
-                    insert(key, _hashMap[i][0].second);
-                    return at(key);
-                }
-            }
+            // insert the key with some value
+            insert(key, ValueT());
+            return at(key);
+
         }
         return at(key);
     }
@@ -408,13 +404,7 @@ public:
         }
         catch (std::invalid_argument)
         {
-            for(int i = 0; i < _capacityOfArray; i++)
-            {
-                if(_hashMap[i].size() != 0)
-                {
-                    return _hashMap[i][0].second;
-                }
-            }
+            return ValueT();
         }
         return at(key);
     }
@@ -425,26 +415,21 @@ public:
         {
             return false;
         }
-        iterator p;
+
         std::pair<KeyT, ValueT> *arrOfAllTheItemsCurr = begin().getAllThePairs();
-        std::pair<KeyT, ValueT> *arrOfAllTheItemsOther = other.begin().getAllThePairs();
-        int numOfSamePairs = 0;
-        for(int i = 0; i < _sizeOfArray; ++i)
+        for (auto it = this->cbegin(); it != this->cend(); ++it)
         {
-            for(int j = 0; j < _sizeOfArray; j++)
+            try
             {
-                if(arrOfAllTheItemsCurr[i] == arrOfAllTheItemsOther[j])
-                {
-                    ++numOfSamePairs;
-                    break;
-                }
+                other.at(it->first);
+            }
+            catch(std::invalid_argument)
+            {
+                return false;
             }
         }
-        if(numOfSamePairs == _sizeOfArray)
-        {
-            return true;
-        }
-        return false;
+        return true;
+
     }
 
     bool operator != (const HashMap& other) const
