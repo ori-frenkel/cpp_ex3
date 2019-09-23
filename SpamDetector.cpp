@@ -113,7 +113,7 @@ bool insertDataFromDataBaseToHashMap(HashMap<std::string, int> dataBase, char*ar
 }
 
 /**
- * Find the number of times str2 is inside str1 (without regards to upper lower case)
+ * Find the number of times str2 is inside str1 (without regards to upper or lower case)
  * @param str1 - string
  * @param str2 - string
  * @return - the number of times str2 is inside str1
@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
     {
         std::cout << NOT_SPAM << std::endl;
     }
-    
+
     return 0;
 }
 
