@@ -411,7 +411,7 @@ public:
 
     bool operator == (const HashMap& other) const
     {
-        if(_sizeOfArray != other._sizeOfArray)
+        if(_sizeOfArray != other._sizeOfArray || _capacityOfArray != other.capacity())
         {
             return false;
         }
