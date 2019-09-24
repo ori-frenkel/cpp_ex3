@@ -5,13 +5,18 @@
 const int defaultHashMapCapacity = 16;
 
 template <typename KeyT, typename ValueT>
+/**
+ * This class represent a generic Hash Map
+ * @tparam KeyT - the type of key in the hash map
+ * @tparam ValueT - the type of value in the hashMap
+ */
 class HashMap
 {
 private:
-    double _lowerBound;
-    double _upperBound;
-    int _capacityOfArray;
-    int _sizeOfArray;
+    double _lowerBound; /**< lower bound of the array */
+    double _upperBound; /**< upper bound ratio of the array */
+    int _capacityOfArray; /**< the capacity of the array that store the hashmap */
+    int _sizeOfArray; /**< the acutall number of items in the hashMap */
     std::vector<std::pair<KeyT, ValueT>> *_hashMap;
     std::hash<KeyT> _hash;
 
@@ -21,7 +26,7 @@ public:
      * @param lowerBound - of the hashMap
      * @param upperBound - of the hashMap
      */
-    HashMap(const double lowerBound = 1.0/4, const double upperBound = 3.0/4) :
+    HashMap(const double lowerBound = (1.0 / 4), const double upperBound = (3.0 / 4)) :
                                                      _lowerBound(lowerBound), \
                                                      _upperBound(upperBound), \
                                                      _capacityOfArray(defaultHashMapCapacity), \
@@ -29,7 +34,7 @@ public:
     {
         if(lowerBound >= upperBound || lowerBound <= 0 || upperBound >= 1)
         {
-            throw std::out_of_range("lowerBound < upperBound and lowerBound > 0 and upperBound <1");
+            throw std::out_of_range("lowerBound < upperBound &&  lowerBound > 0 && upperBound <1");
         }
         try
         {
@@ -61,21 +66,23 @@ public:
         }
     }
 
-    std::vector<std::pair<KeyT, ValueT>>* getHashMap()
-    {
-        return _hashMap;
-    }
-
+    /**
+     *
+     * @return the lower bound of the hashMap
+     */
     const double& getLowerBound() const
     {
         return _lowerBound;
     }
 
+    /**
+     *
+     * @return the upper bound of the array
+     */
     const double& getUpperBound() const
     {
         return _upperBound;
     }
-
 
     /**
      * Copy constructor
@@ -112,9 +119,7 @@ public:
                                 _upperBound(std::move(other._upperBound)), \
                                 _hashMap(std::move(other._hashMap)), \
                                 _capacityOfArray(std::move(other._capacityOfArray)), \
-                                _sizeOfArray(other._sizeOfArray)
-    {
-    }
+                                _sizeOfArray(other._sizeOfArray) {}
 
     /**
      *
@@ -171,10 +176,10 @@ public:
             newCapacity /= 2;
         }
 
+        std::vector<std::pair<KeyT, ValueT>> * newHashMap = nullptr;
         try
         {
-            std::vector<std::pair<KeyT, ValueT>> * newHashMap = \
-                                new std::vector<std::pair<KeyT, ValueT>>[newCapacity];
+            newHashMap = new std::vector<std::pair<KeyT, ValueT>>[newCapacity];
 
             for(int i = 0; i < _capacityOfArray; ++i)
             {
@@ -193,9 +198,17 @@ public:
         catch (std::bad_alloc)
         {
             std::cerr << "Memory allocation failed" << std::endl;
+            delete[] newHashMap;
+            delete[] _hashMap;
         }
     }
 
+    /**
+     * Insert (key, value) to the HashMap
+     * @param key - the key to insert
+     * @param value - the value to insert
+     * @return - true if insert succeed, false otherwise.
+     */
     bool insert(KeyT key, ValueT value)
     {
 
@@ -206,7 +219,7 @@ public:
         {
             return false;
         }
-        _hashMap[index].push_back(std::pair<KeyT,ValueT>(key, value));
+        _hashMap[index].push_back(std::pair<KeyT, ValueT>(key, value));
         ++_sizeOfArray;
         if(getLoadFactor() > _upperBound)
         {
@@ -409,6 +422,11 @@ public:
         return at(key);
     }
 
+    /**
+     * Checking if this hashMap is the same as other hashMap
+     * @param other - hashMap
+     * @return true if this and other hashMap are equal, false otherwise.
+     */
     bool operator == (const HashMap& other) const
     {
         if(_sizeOfArray != other._sizeOfArray || _capacityOfArray != other.capacity() || \
@@ -436,14 +454,23 @@ public:
 
     }
 
+    /**
+     * Checking if this hashMap is different from other hashMap
+     * @param other - hashMap
+     * @return - true if this and other hashMap are not equal, false otherwise.
+     */
     bool operator != (const HashMap& other) const
     {
         return !operator==(other);
     }
 
+    /**
+     * Destructor
+     */
     ~HashMap()
     {
         delete[] _hashMap;
+        //delete (&_hash);
     }
 
     class iterator
@@ -466,7 +493,7 @@ public:
          * @param capacityOfHash - The Capacity of the HashMap
          */
         iterator(std::vector<std::pair<KeyT, ValueT>> *hashMap = nullptr, int sizeOfHashMap = 0, \
-                int capacityOfHash = 0, int currentLocation = 0) : _hashMap(hashMap)
+                 int capacityOfHash = 0, int currentLocation = 0) : _hashMap(hashMap)
         {
             int index = 0;
             _capacityOfHash = capacityOfHash;
@@ -510,12 +537,6 @@ public:
          */
         std::pair<KeyT, ValueT>& operator * () const
         {
-            /*
-            if(_currentLocation == _capacityOfHash)
-            {
-                return nullptr;
-            }
-             */
             return _arrOfAllTheItems[_currentLocation];
         }
 
@@ -587,15 +608,15 @@ public:
             return _arrOfAllTheItems;
         }
 
-        ~iterator(){delete[] _arrOfAllTheItems;}
+        ~iterator(){delete[] _arrOfAllTheItems; }
 
     };
-    iterator begin() {return iterator(_hashMap, _sizeOfArray, _capacityOfArray);}
-    iterator begin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray);}
-    iterator cbegin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray);}
-    iterator end() { return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray);}
-    iterator end() const{ return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray);}
-    iterator cend() const{ return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray);}
+    iterator begin() {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+    iterator begin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+    iterator cbegin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+    iterator end() { return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
+    iterator end() const{ return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
+    iterator cend() const{ return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
 
 
 };

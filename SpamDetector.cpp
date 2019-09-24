@@ -31,7 +31,7 @@ bool strContainOnlyDigits(const std::string &str)
  * Convert string to lower case
  * @param str - string to convert
  */
-std::string lower_string(const std::string& str)
+std::string lowerStringCase(const std::string& str)
 {
     std::string loweCaseStr = str;
     for(int i = 0; str[i] != '\0'; i++)
@@ -122,8 +122,8 @@ bool insertDataFromDataBaseToHashMap(HashMap<std::string, int>& dataBase, char*a
  */
 long countNumberOfStrInStr(const std::string& str1, const std::string& str2)
 {
-    std::string str1_lower = lower_string(str1);
-    std::string str2_lower = lower_string(str2);
+    std::string str1_lower = lowerStringCase(str1);
+    std::string str2_lower = lowerStringCase(str2);
     long count = 0;
     std::string::size_type position = 0;
     while ((position = str1_lower.find(str2_lower, position )) != std::string::npos)
