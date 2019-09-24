@@ -428,7 +428,7 @@ public:
      * @param key - the key that we want to find the value of.
      * @return - random value, if the key is invalid, or the value that belong to the key otherwise
      */
-    ValueT& operator [] (const KeyT& key) const noexcept
+    ValueT operator [] (const KeyT& key) const noexcept
     {
         try
         {
@@ -647,7 +647,7 @@ public:
      * const version
      * @return the start of the iterator
      */
-    iterator begin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+     iterator begin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
 
     /**
      * const version

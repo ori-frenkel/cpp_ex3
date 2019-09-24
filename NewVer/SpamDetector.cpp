@@ -68,7 +68,7 @@ bool checkForValidInput(const std::string& line)
     std::string points_seq = line.substr(dividerPos + 1, line.length()); // part1
 
     // checking if there is actually points (part1) and actually a string of bad sequence (part 0)
-    if(points_seq.length() == 0 || !strContainOnlyDigits(points_seq))
+    if(part0.length() == 0 || points_seq.length() == 0 || !strContainOnlyDigits(points_seq))
     {
         return false;
     }
@@ -116,11 +116,6 @@ bool insertDataFromDataBaseToHashMap(HashMap<std::string, int>& dataBase, char*a
         }
         std::size_t dividerPos = line.find(',');
         std::string bad_seq = line.substr(0, dividerPos); // part0
-        if(bad_seq.length() == 0)
-        {
-            continue;  // to handle cases like ",5", according to school solution the forum
-                        // its legal input
-        }
         std::string points_seq = line.substr(dividerPos + 1, line.length()); // part1
         try
         {
