@@ -121,8 +121,14 @@ public:
     HashMap(HashMap && other) : _lowerBound(std::move(other._lowerBound)), \
                                 _upperBound(std::move(other._upperBound)), \
                                 _capacityOfArray(std::move(other._capacityOfArray)), \
-                                _sizeOfArray(other._sizeOfArray), \
-                                _hashMap(std::move(other._hashMap)) {}
+                                _sizeOfArray(other._sizeOfArray)
+
+    {
+        for(long i = 0 ; i < _hashMap->capacity(); ++i)
+        {
+            _hashMap[i] = std::move(other._hashMap[i]);
+        }
+    }
 
 
     /**
@@ -642,7 +648,7 @@ public:
      * const version
      * @return the start of the iterator
      */
-     iterator begin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+    iterator begin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
 
     /**
      * const version
