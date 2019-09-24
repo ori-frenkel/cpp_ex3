@@ -109,7 +109,14 @@ bool insertDataFromDataBaseToHashMap(HashMap<std::string, int>& dataBase, char*a
         std::size_t dividerPos = line.find(',');
         std::string bad_seq = line.substr(0, dividerPos); // part0
         std::string points_seq = line.substr(dividerPos + 1, line.length()); // part1
-        dataBase.insert(bad_seq, std::stoi(points_seq));
+        try
+        {
+            dataBase.insert(bad_seq, std::stoi(points_seq));
+        }
+        catch (const std::bad_alloc& e)
+        {
+            throw e;
+        }
     }
     return true;
 }
@@ -142,7 +149,8 @@ long countNumberOfStrInStr(const std::string& str1, const std::string& str2)
  * @return -1 if failed to open the file, non-negative otherwise that represent the total pointer
  *          the file got
  */
-long getTotalFilePoint(char* argv[], const int gMsgIndex, const HashMap<std::string, int> &dataBase)
+long getTotalFilePoint(char* argv[], const int gMsgIndex, \
+                       const HashMap<std::string, int> &dataBase)
 {
     /*
     path p(argv[gMsgIndex]);
@@ -165,6 +173,13 @@ long getTotalFilePoint(char* argv[], const int gMsgIndex, const HashMap<std::str
     return totalFilePoints;
 }
 
+/**
+ * getting from the user all the arguments and printing whether the message is legal (error msg
+ * if not), and if legal, print if its a SPAM message or NOT SPAM
+ * @param argc - number of argument in the command line
+ * @param argv - array of string that contain all the command line arguments
+ * @return 0 on success, 1 on failure
+ */
 int main(int argc, char* argv[])
 {
     const int gDatBaseIndex = 1; // the data base location in command line
@@ -177,7 +192,19 @@ int main(int argc, char* argv[])
     }
 
     HashMap<std::string, int> dataBase = HashMap<std::string, int>();
-    if(!insertDataFromDataBaseToHashMap(dataBase, argv, gDatBaseIndex))
+    bool insertToHashMap;
+    try
+    {
+        insertToHashMap = insertDataFromDataBaseToHashMap(dataBase, argv, gDatBaseIndex);
+    }
+
+    catch (const std::bad_alloc& e)
+    {
+        std::cerr << "Memory allocation failed" << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    if(!insertToHashMap)
     {
         std::cerr << INVALID_INPUT << std::endl;
         return EXIT_FAILURE;

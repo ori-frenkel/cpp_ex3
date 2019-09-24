@@ -15,8 +15,8 @@ class HashMap
 private:
     double _lowerBound; /**< lower bound of the array */
     double _upperBound; /**< upper bound ratio of the array */
-    int _capacityOfArray; /**< the capacity of the array that store the hashmap */
-    int _sizeOfArray; /**< the acutall number of items in the hashMap */
+    int _capacityOfArray; /**< the capacity of the array that store the hashMap */
+    int _sizeOfArray; /**< the actual number of items in the hashMap */
     std::vector<std::pair<KeyT, ValueT>> *_hashMap;
     std::hash<KeyT> _hash;
 
@@ -40,9 +40,10 @@ public:
         {
             _hashMap = new std::vector<std::pair<KeyT, ValueT>>[defaultHashMapCapacity];
         }
-        catch (std::bad_alloc)
+        catch (const std::bad_alloc& e)
         {
             std::cerr << "Memory allocation failed" << std::endl;
+            throw e;
         }
 
     };
@@ -99,14 +100,16 @@ public:
         {
             _hashMap = new std::vector<std::pair<KeyT, ValueT>>[other.capacity()];
         }
-        catch (std::bad_alloc)
+        catch (const std::bad_alloc& e)
         {
             std::cerr << "Memory allocation failed" << std::endl;
+            throw e;
         }
 
         for(int i = 0 ; i < _capacityOfArray; ++i)
         {
-            std::copy(other._hashMap[i].begin(), other._hashMap[i].end(), back_inserter(_hashMap[i]));
+            std::copy(other._hashMap[i].begin(), other._hashMap[i].end(), \
+                      back_inserter(_hashMap[i]));
         }
 
     }
@@ -117,9 +120,10 @@ public:
      */
     HashMap(HashMap && other) : _lowerBound(std::move(other._lowerBound)), \
                                 _upperBound(std::move(other._upperBound)), \
-                                _hashMap(std::move(other._hashMap)), \
                                 _capacityOfArray(std::move(other._capacityOfArray)), \
-                                _sizeOfArray(other._sizeOfArray) {}
+                                _sizeOfArray(other._sizeOfArray), \
+                                _hashMap(std::move(other._hashMap)) {}
+
 
     /**
      *
@@ -183,7 +187,7 @@ public:
 
             for(int i = 0; i < _capacityOfArray; ++i)
             {
-                for(int j = 0; j < _hashMap[i].size(); j++)
+                for(size_t j = 0; j < _hashMap[i].size(); j++)
                 {
                     int index = _hash(_hashMap[i][j].first) & (newCapacity - 1);
                     newHashMap[index].push_back(\
@@ -195,11 +199,10 @@ public:
             _hashMap = newHashMap;
             _capacityOfArray = newCapacity;
         }
-        catch (std::bad_alloc)
+        catch (const std::bad_alloc& e)
         {
-            std::cerr << "Memory allocation failed" << std::endl;
             delete[] newHashMap;
-            delete[] _hashMap;
+            throw e;
         }
     }
 
@@ -223,7 +226,14 @@ public:
         ++_sizeOfArray;
         if(getLoadFactor() > _upperBound)
         {
-            rehashing(true);
+            try
+            {
+                rehashing(true);
+            }
+            catch (const std::bad_alloc& e)
+            {
+                throw e;
+            }
         }
         return true;
     }
@@ -236,7 +246,7 @@ public:
     bool containsKey(KeyT key) const
     {
         int index = _hash(key) & (_capacityOfArray - 1);
-        for(int i = 0; i < _hashMap[index].size(); i++)
+        for(size_t i = 0; i < _hashMap[index].size(); ++i)
         {
             if(_hashMap[index][i].first == key)
             {
@@ -254,7 +264,7 @@ public:
     const ValueT& at(KeyT key) const
     {
         int index = _hash(key) & (_capacityOfArray - 1);
-        for(int i = 0; i < _hashMap[index].size(); i++)
+        for(int i = 0; i < _hashMap[index].size(); ++i)
         {
             if((_hashMap[index])[i].first == key)
             {
@@ -274,7 +284,7 @@ public:
     ValueT& at(KeyT key)
     {
         int index = _hash(key) & (_capacityOfArray - 1);
-        for(int i = 0; i < _hashMap[index].size(); i++)
+        for(int i = 0; i < _hashMap[index].size(); ++i)
         {
             if((_hashMap[index])[i].first == key)
             {
@@ -299,7 +309,7 @@ public:
         }
 
         int index = _hash(key) & (_capacityOfArray - 1);
-        for(int i = 0; i < _hashMap[index].size(); i++)
+        for(int i = 0; i < _hashMap[index].size(); ++i)
         {
             if((_hashMap[index])[i].first == key)
             {
@@ -311,7 +321,14 @@ public:
         --_sizeOfArray;
         if(getLowerBound() > getLoadFactor())
         {
-            rehashing(false);
+            try
+            {
+                rehashing(false);
+            }
+            catch (const std::bad_alloc& e)
+            {
+                throw e;
+            }
         }
         return true;
     }
@@ -337,7 +354,7 @@ public:
      */
     void clear()
     {
-        for(int i = 0; i < _capacityOfArray; i++)
+        for(int i = 0; i < _capacityOfArray; ++i)
         {
             _hashMap[i].clear();
         }
@@ -372,7 +389,8 @@ public:
 
         for(int i = 0 ; i < otherCapacity; ++i)
         {
-            std::copy(other._hashMap[i].begin(), other._hashMap[i].end(), back_inserter(_hashMap[i]));
+            std::copy(other._hashMap[i].begin(), \
+                      other._hashMap[i].end(), back_inserter(_hashMap[i]));
         }
 
         _lowerBound = other.getLowerBound();
@@ -386,7 +404,8 @@ public:
     /**
      * overload subscript operator - non const version
      * @param key - the key that we want to find the value of.
-     * @return - random variable, if the key is invalid, or the value that belong to the key otherwise
+     * @return - random variable, if the key is invalid, or the value that belong to the key
+     * otherwise
      */
     ValueT& operator [] (const KeyT& key) noexcept
     {
@@ -470,20 +489,19 @@ public:
     ~HashMap()
     {
         delete[] _hashMap;
-        //delete (&_hash);
     }
 
+    /**
+     * iterator of the hashMap
+     */
     class iterator
     {
     private:
-        std::vector<std::pair<KeyT, ValueT>> *_hashMap;
-
-        // array of all the pairs in the hashMap
-        std::pair<KeyT, ValueT> *_arrOfAllTheItems;
-        // current location in the _arrOfAllTheItems
-        int _currentLocation;
-        int _capacityOfHash;
-        int _endLocation = 0;
+        std::vector<std::pair<KeyT, ValueT>> *_hashMap; /**< the hashMap to iterate on */
+        std::pair<KeyT, ValueT> *_arrOfAllTheItems; /**< array of all the pairs in the hashMap */
+        int _currentLocation; /**< current location in the _arrOfAllTheItems */
+        int _capacityOfHash; /**< capacity of the hash */
+        int _endLocation = 0; /**< end location of the hashMap */
 
     public:
         /**
@@ -504,7 +522,7 @@ public:
                 {
                     continue;
                 }
-                for(int j = 0; j < _hashMap[i].size(); j++)
+                for(size_t j = 0; j < _hashMap[i].size(); j++)
                 {
                     _arrOfAllTheItems[index] = _hashMap[i][j];
                     ++index;
@@ -518,6 +536,10 @@ public:
             _endLocation = index;
         };
 
+        /**
+         * Copy constructor
+         * @param other - other iterator to copy.
+         */
         iterator(const iterator& other)
         {
             _hashMap = other._hashMap;
@@ -608,14 +630,47 @@ public:
             return _arrOfAllTheItems;
         }
 
+        /**
+         * Destructor
+         */
         ~iterator(){delete[] _arrOfAllTheItems; }
 
     };
+
+    /**
+     * non const version
+     * @return the start of the iterator
+     */
     iterator begin() {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+
+    /**
+     * const version
+     * @return the start of the iterator
+     */
     iterator begin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+
+    /**
+     * const version
+     * @return the start of the iterator
+     */
     iterator cbegin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+
+    /**
+     * non const version
+     * @return return iterator of last+1
+     */
     iterator end() { return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
+
+    /**
+     * const version
+     * @return return iterator of last+1
+     */
     iterator end() const{ return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
+
+    /**
+     * const version
+     * @return return iterator of last+1
+     */
     iterator cend() const{ return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
 
 
