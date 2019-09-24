@@ -212,7 +212,7 @@ int main(int argc, char* argv[])
         std::cerr << ALLOCATION_FAILED << std::endl;
         return EXIT_FAILURE;
     }
-    
+
     bool insertToHashMap;
     try
     {
@@ -249,7 +249,7 @@ int main(int argc, char* argv[])
         std::cerr << INVALID_INPUT << std::endl;
         return EXIT_FAILURE;
     }
-    // std::cout << "total num of points is : " << totalFilePoint << std::endl;
+
     if(threshold <= totalFilePoint)
     {
         std::cout << SPAM << std::endl;
