@@ -70,6 +70,11 @@ bool checkForValidInput(const std::string& line)
         return false;
     }
 
+    // according to the school solution, if part0[0] == ' ' than return invalid input;
+    if(part0[0] == ' ')
+    {
+        return false;
+    }
     // number of points must be non-negative (positive or zero)
     if(std::stoi(points_seq) < 0)
     {
