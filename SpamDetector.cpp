@@ -2,19 +2,22 @@
 // Created by Owner on 23/09/2019.
 //
 #define INVALID_INPUT "Invalid input"
+#define ALLOCATION_FAILED "Memory allocation failed"
 #define FAILURE -1
 #define DIGIT "0123456789"
 #define SPAM "SPAM"
 #define NOT_SPAM "NOT_SPAM"
 #include <iostream>
 #include "HashMap.hpp"
-//#include <boost/filesystem.hpp>
+#include <boost/filesystem.hpp>
 #include <fstream>
 #include <ostream>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <sstream>
+
+using namespace boost::filesystem;
 
 
 /**
@@ -94,14 +97,14 @@ bool checkForValidInput(const std::string& line)
 bool insertDataFromDataBaseToHashMap(HashMap<std::string, int>& dataBase, char*argv[], \
                                      const int& gDatBaseIndex)
 {
-    /*
+
     path p(argv[gDatBaseIndex]);
     // checking if the path actually exist
     if (!exists(p))
     {
         return false;
     }
-    */
+
     std::string line;
     std::ifstream input_dataBase(argv[gDatBaseIndex]);
 
@@ -115,7 +118,7 @@ bool insertDataFromDataBaseToHashMap(HashMap<std::string, int>& dataBase, char*a
         std::string bad_seq = line.substr(0, dividerPos); // part0
         if(bad_seq.length() == 0)
         {
-            continue;  // --> to handle case like ",5", according to school solution the forum
+            continue;  // to handle cases like ",5", according to school solution the forum
                         // its legal input
         }
         std::string points_seq = line.substr(dividerPos + 1, line.length()); // part1
@@ -162,14 +165,13 @@ long countNumberOfStrInStr(const std::string& str1, const std::string& str2)
 long getTotalFilePoint(char* argv[], const int gMsgIndex, \
                        const HashMap<std::string, int> &dataBase)
 {
-    /*
+
     path p(argv[gMsgIndex]);
     // checking if the path actually exist
     if (!exists(p))
     {
         return FAILURE;
     }
-    */
     // convert the file input to string
     std::ifstream tmp(argv[gMsgIndex]);
     std::stringstream msg;
@@ -200,17 +202,25 @@ int main(int argc, char* argv[])
         std::cerr << "Usage: SpamDetector <database path> <message path> <threshold>" << std::endl;
         return EXIT_FAILURE;
     }
-
-    HashMap<std::string, int> dataBase = HashMap<std::string, int>();
+    HashMap<std::string, int> dataBase;
+    try
+    {
+        dataBase = HashMap<std::string, int>();
+    }
+    catch (const std::bad_alloc& e)
+    {
+        std::cerr << ALLOCATION_FAILED << std::endl;
+        return EXIT_FAILURE;
+    }
+    
     bool insertToHashMap;
     try
     {
         insertToHashMap = insertDataFromDataBaseToHashMap(dataBase, argv, gDatBaseIndex);
     }
-
     catch (const std::bad_alloc& e)
     {
-        std::cerr << "Memory allocation failed" << std::endl;
+        std::cerr << ALLOCATION_FAILED << std::endl;
         return EXIT_FAILURE;
     }
 

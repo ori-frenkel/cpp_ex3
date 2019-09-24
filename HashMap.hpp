@@ -42,7 +42,6 @@ public:
         }
         catch (const std::bad_alloc& e)
         {
-            std::cerr << "Memory allocation failed" << std::endl;
             throw e;
         }
 
