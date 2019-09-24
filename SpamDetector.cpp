@@ -84,7 +84,7 @@ bool checkForValidInput(const std::string& line)
  * @param gDatBaseIndex - index in argv that contains dataBase path
  * @return true, if succeed, false otherwise.
  */
-bool insertDataFromDataBaseToHashMap(HashMap<std::string, int> dataBase, char*argv[], \
+bool insertDataFromDataBaseToHashMap(HashMap<std::string, int>& dataBase, char*argv[], \
                                      const int& gDatBaseIndex)
 {
     /*
@@ -174,13 +174,12 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    HashMap<std::string, int> dataBase;
+    HashMap<std::string, int> dataBase = HashMap<std::string, int>();
     if(!insertDataFromDataBaseToHashMap(dataBase, argv, gDatBaseIndex))
     {
         std::cerr << INVALID_INPUT << std::endl;
         return EXIT_FAILURE;
     }
-
     long totalFilePoint = getTotalFilePoint(argv, gMsgIndex, dataBase);
     if(totalFilePoint == FAILURE)
     {
@@ -193,7 +192,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
     long threshold = std::stoi(argv[gThresholdIndex]);
-
+    // std::cout << "total num of points is : " << totalFilePoint << std::endl;
     if(threshold <= totalFilePoint)
     {
         std::cout << SPAM << std::endl;
