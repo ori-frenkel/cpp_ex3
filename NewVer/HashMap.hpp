@@ -637,11 +637,6 @@ public:
 
     };
 
-    /**
-     * non const version
-     * @return the start of the iterator
-     */
-    iterator begin() {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
 
     /**
      * const version
@@ -655,11 +650,6 @@ public:
      */
     iterator cbegin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
 
-    /**
-     * non const version
-     * @return return iterator of last+1
-     */
-    iterator end() { return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
 
     /**
      * const version
