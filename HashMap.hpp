@@ -1,6 +1,5 @@
 #include <vector>
 #include <assert.h>
-#include <iostream> // todo : remove this include
 // default hash map size
 const int defaultHashMapCapacity = 16;
 
@@ -377,9 +376,9 @@ public:
             {
                 _hashMap = new std::vector<std::pair<KeyT, ValueT>>[otherCapacity];
             }
-            catch (std::bad_alloc)
+            catch (const std::bad_alloc& e)
             {
-                std::cerr << "Memory allocation failed" << std::endl;
+                throw e;
             }
             _capacityOfArray = otherCapacity;
         }
