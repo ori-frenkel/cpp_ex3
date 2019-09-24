@@ -25,6 +25,17 @@ bool strContainDigit(const std::string& str)
     return std::string::npos != str.find_first_of(DIGIT);
 }
 
+
+/**
+ * Checking if the given string contain only digits
+ * @param str - string
+ * @return - true - if the string contain only digits, false otherwise
+ */
+bool strContainOnlyDigits(const std::string &str)
+{
+    return str.find_first_not_of(DIGIT) == std::string::npos;
+}
+
 /**
  * Convert string to lower case
  * @param str - string to convert
@@ -107,6 +118,10 @@ bool insertDataFromDataBaseToHashMap(HashMap<std::string, int>& dataBase, char*a
         std::size_t dividerPos = line.find(',');
         std::string bad_seq = line.substr(0, dividerPos); // part0
         std::string points_seq = line.substr(dividerPos + 1, line.length()); // part1
+        if(!strContainOnlyDigits(points_seq))
+        {
+            return false;
+        }
         dataBase.insert(bad_seq, std::stoi(points_seq));
     }
     return true;
@@ -180,6 +195,7 @@ int main(int argc, char* argv[])
         std::cerr << INVALID_INPUT << std::endl;
         return EXIT_FAILURE;
     }
+
     long totalFilePoint = getTotalFilePoint(argv, gMsgIndex, dataBase);
     if(totalFilePoint == FAILURE)
     {
