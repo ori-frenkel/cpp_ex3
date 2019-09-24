@@ -203,8 +203,9 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    if(!strContainDigit(argv[gThresholdIndex]))
+    if(!strContainOnlyDigits(argv[gThresholdIndex]))
     {
+        std::cerr << INVALID_INPUT << std::endl;
         return EXIT_FAILURE;
     }
     long threshold = std::stoi(argv[gThresholdIndex]);
