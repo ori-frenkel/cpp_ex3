@@ -118,17 +118,11 @@ public:
      * Move constructor
      * @param other - other object of type HashMap
      */
-    HashMap(HashMap && other) : _lowerBound(std::move(other._lowerBound)), \
-                                _upperBound(std::move(other._upperBound)), \
-                                _capacityOfArray(std::move(other._capacityOfArray)), \
-                                _sizeOfArray(other._sizeOfArray)
-
-    {
-        for(long i = 0 ; i < _hashMap->capacity(); ++i)
-        {
-            _hashMap[i] = std::move(other._hashMap[i]);
-        }
-    }
+    HashMap(HashMap && other) : _lowerBound(other._lowerBound), \
+                                _upperBound(other._upperBound), \
+                                _capacityOfArray(other._capacityOfArray), \
+                                _sizeOfArray(other._sizeOfArray), \
+                                _hashMap(std::move(other._hashMap){}
 
 
     /**
@@ -500,7 +494,7 @@ public:
     /**
      * iterator of the hashMap
      */
-    class iterator
+    class const_iterator
     {
     private:
         std::vector<std::pair<KeyT, ValueT>> *_hashMap; /**< the hashMap to iterate on */
@@ -516,7 +510,7 @@ public:
          * @param sizeOfHashMap - The number of pairs in the HashMap
          * @param capacityOfHash - The Capacity of the HashMap
          */
-        iterator(std::vector<std::pair<KeyT, ValueT>> *hashMap = nullptr, int sizeOfHashMap = 0, \
+        const_iterator(std::vector<std::pair<KeyT, ValueT>> *hashMap = nullptr, int sizeOfHashMap = 0, \
                  int capacityOfHash = 0, int currentLocation = 0) : _hashMap(hashMap)
         {
             int index = 0;
@@ -546,7 +540,7 @@ public:
          * Copy constructor
          * @param other - other iterator to copy.
          */
-        iterator(const iterator& other)
+        const_iterator(const const_iterator& other)
         {
             _hashMap = other._hashMap;
             _currentLocation = other._currentLocation;
@@ -585,7 +579,7 @@ public:
          * prefix increment operator - '++i'
          * @return current iterator after '++'
          */
-        iterator& operator++()
+        const_iterator& operator++()
         {
             ++_currentLocation;
             return *this;
@@ -595,9 +589,9 @@ public:
          * postfix increment operator - 'i++'
          * @return
          */
-        iterator& operator++(int)
+        const_iterator& operator++(int)
         {
-            iterator tmp = *this;
+            const_iterator tmp = *this;
             ++_currentLocation;
             return *this;
         }
@@ -607,7 +601,7 @@ public:
          * @param other - other iterator
          * @return - true, if both iterator pointing to the same pair, false otherwise
          */
-        bool operator == (iterator const& other) const
+        bool operator == (const_iterator const& other) const
         {
             if((_currentLocation == other._currentLocation) && (_currentLocation == _endLocation))
             {
@@ -622,7 +616,7 @@ public:
          * @param other - other iterator
          * @return - false, if both iterator pointing to the same pair, true otherwise
          */
-        bool operator != (iterator const&other) const
+        bool operator != (const_iterator const& other) const
         {
             return !operator==(other);
         }
@@ -639,7 +633,7 @@ public:
         /**
          * Destructor
          */
-        ~iterator(){delete[] _arrOfAllTheItems; }
+        ~const_iterator(){delete[] _arrOfAllTheItems; }
 
     };
 
@@ -648,26 +642,26 @@ public:
      * const version
      * @return the start of the iterator
      */
-    iterator begin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+    const_iterator begin() const {return const_iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
 
     /**
      * const version
      * @return the start of the iterator
      */
-    iterator cbegin() const {return iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+    const_iterator cbegin() const {return const_iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
 
 
     /**
      * const version
      * @return return iterator of last+1
      */
-    iterator end() const{ return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
+    const_iterator end() const{ return const_iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
 
     /**
      * const version
      * @return return iterator of last+1
      */
-    iterator cend() const{ return iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
+    const_iterator cend() const{ return const_iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
 
 
 };
