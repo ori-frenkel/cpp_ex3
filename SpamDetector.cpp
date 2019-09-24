@@ -16,15 +16,6 @@
 #include <algorithm>
 #include <sstream>
 
-/**
- * @param str - string
- * @return - true if the string contain a digit, false otherwise
- */
-bool strContainDigit(const std::string& str)
-{
-    return std::string::npos != str.find_first_of(DIGIT);
-}
-
 
 /**
  * Checking if the given string contain only digits
@@ -74,7 +65,7 @@ bool checkForValidInput(const std::string& line)
     std::string points_seq = line.substr(dividerPos + 1, line.length()); // part1
 
     // checking if there is actually points (part1) and actually a string of bad sequence (part 0)
-    if(part0.length() == 0 || points_seq.length() == 0 || !strContainDigit(points_seq))
+    if(part0.length() == 0 || points_seq.length() == 0 || !strContainOnlyDigits(points_seq))
     {
         return false;
     }
@@ -118,10 +109,6 @@ bool insertDataFromDataBaseToHashMap(HashMap<std::string, int>& dataBase, char*a
         std::size_t dividerPos = line.find(',');
         std::string bad_seq = line.substr(0, dividerPos); // part0
         std::string points_seq = line.substr(dividerPos + 1, line.length()); // part1
-        if(!strContainOnlyDigits(points_seq))
-        {
-            return false;
-        }
         dataBase.insert(bad_seq, std::stoi(points_seq));
     }
     return true;
@@ -209,6 +196,12 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
     long threshold = std::stoi(argv[gThresholdIndex]);
+
+    if(threshold <= 0)
+    {
+        std::cerr << INVALID_INPUT << std::endl;
+        return EXIT_FAILURE;
+    }
     // std::cout << "total num of points is : " << totalFilePoint << std::endl;
     if(threshold <= totalFilePoint)
     {
