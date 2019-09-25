@@ -118,11 +118,11 @@ public:
      * Move constructor
      * @param other - other object of type HashMap
      */
-    HashMap(HashMap && other) : _lowerBound(other._lowerBound), \
-                                _upperBound(other._upperBound), \
+    HashMap(HashMap && other) : _lowerBound(other.getLowerBound()), \
+                                _upperBound(other.getUpperBound()), \
                                 _capacityOfArray(other._capacityOfArray), \
                                 _sizeOfArray(other._sizeOfArray), \
-                                _hashMap(std::move(other._hashMap){}
+                                _hashMap(std::move(other._hashMap)) {}
 
 
     /**
@@ -616,7 +616,7 @@ public:
          * @param other - other iterator
          * @return - false, if both iterator pointing to the same pair, true otherwise
          */
-        bool operator != (const_iterator const& other) const
+        bool operator != (const_iterator const&other) const
         {
             return !operator==(other);
         }
