@@ -557,7 +557,7 @@ public:
          *
          * @return - the pair that the iterator is pointing to.
          */
-        std::pair<KeyT, ValueT>& operator * () const
+        const std::pair<KeyT, ValueT>& operator * () const
         {
             return _arrOfAllTheItems[_currentLocation];
         }
