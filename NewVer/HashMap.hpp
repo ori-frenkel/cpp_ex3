@@ -272,7 +272,6 @@ public:
             }
         }
 
-        // todo : need to free all the memory, here or in main with try and catch block
         throw std::invalid_argument("at function must get a valid key");
     }
 
@@ -448,8 +447,8 @@ public:
      */
     bool operator == (const HashMap& other) const
     {
-        if(_sizeOfArray != other._sizeOfArray || _capacityOfArray != other.capacity() || \
-           _lowerBound != other._lowerBound || _upperBound != other._upperBound)
+        if(_sizeOfArray != other.size() || _capacityOfArray != other.capacity() || \
+           _lowerBound != other.getLowerBound() || _upperBound != other.getUpperBound())
         {
             return false;
         }
@@ -607,6 +606,10 @@ public:
             {
                 return true;
             }
+            if(_currentLocation != other._currentLocation || _endLocation != other._endLocation)
+            {
+                return false;
+            }
             return _arrOfAllTheItems[_currentLocation] == \
                                                other._arrOfAllTheItems[other._currentLocation];
         }
@@ -642,26 +645,30 @@ public:
      * const version
      * @return the start of the iterator
      */
-    const_iterator begin() const {return const_iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+    const_iterator begin() const {return const_iterator(_hashMap, _sizeOfArray, \
+                                                          _capacityOfArray); }
 
     /**
      * const version
      * @return the start of the iterator
      */
-    const_iterator cbegin() const {return const_iterator(_hashMap, _sizeOfArray, _capacityOfArray); }
+    const_iterator cbegin() const {return const_iterator(_hashMap, _sizeOfArray, \
+                                                           _capacityOfArray); }
 
 
     /**
      * const version
      * @return return iterator of last+1
      */
-    const_iterator end() const{ return const_iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
+    const_iterator end() const{ return const_iterator(_hashMap, _sizeOfArray, _sizeOfArray, \
+                                                        _sizeOfArray); }
 
     /**
      * const version
      * @return return iterator of last+1
      */
-    const_iterator cend() const{ return const_iterator(_hashMap, _sizeOfArray, _sizeOfArray, _sizeOfArray); }
+    const_iterator cend() const{ return const_iterator(_hashMap, _sizeOfArray, _sizeOfArray,\
+                                                         _sizeOfArray); }
 
 
 };
