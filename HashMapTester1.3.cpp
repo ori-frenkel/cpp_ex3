@@ -181,7 +181,7 @@ void testIterator()
     {
         myMap.insert(i, i + 1);
     }
-    // the iterator should be able to work on const objects, therefore converted to const
+    // the const_iterator should be able to work on const objects, therefore converted to const
     const HashMap<int, int> myMap2 = myMap;
 
     // checks the postfix
@@ -569,9 +569,13 @@ int main()
     testDefConstructor();
     testConstructorWithFactor();
     testConstructorVectors();
+
     testCopyAndAssign();
+
     testIterator();
+
     testClearAndCopy();
+
     testCopyToItself();
     testBucketSize();
     testEraseContent();
@@ -584,5 +588,6 @@ int main()
     checkAtUpdate();
     std::cout << '\n';
     std::cout << "good job!! you passed all tests!\n";
+
     return 0;
 }
