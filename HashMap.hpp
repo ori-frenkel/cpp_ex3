@@ -266,6 +266,10 @@ public:
      */
     const ValueT& at(const KeyT& key) const
     {
+        if(_hashMap == nullptr)
+        {
+            throw std::out_of_range("hashMap is null");
+        }
         int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); ++i)
         {
@@ -285,6 +289,10 @@ public:
      */
     ValueT& at(const KeyT& key)
     {
+        if(_hashMap == nullptr)
+        {
+            throw std::out_of_range("hashMap is null");
+        }
         int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); ++i)
         {
