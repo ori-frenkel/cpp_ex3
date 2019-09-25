@@ -527,7 +527,7 @@ public:
             int index = 0;
             _capacityOfHash = capacityOfHash;
             _arrOfAllTheItems = new std::pair<KeyT, ValueT>[sizeOfHashMap];
-            for(int i = 0; i < capacityOfHash; i++)
+            for(int i = 0; i < capacityOfHash; ++i)
             {
                 if(_hashMap[i].size() == 0)
                 {
@@ -556,7 +556,7 @@ public:
             _hashMap = other._hashMap;
             _currentLocation = other._currentLocation;
             _arrOfAllTheItems = new std::pair<KeyT, ValueT>[other._capacityOfHash];
-            for(int i = 0; i < other._capacityOfHash; i++)
+            for(int i = 0; i < other._capacityOfHash; ++i)
             {
                 _arrOfAllTheItems[i] = other._arrOfAllTheItems[i];
             }
