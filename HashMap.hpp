@@ -268,7 +268,7 @@ public:
     {
         if(_hashMap == nullptr)
         {
-            throw std::out_of_range("hashMap is null");
+            throw std::invalid_argument("hashMap is null");
         }
         int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); ++i)
@@ -291,7 +291,7 @@ public:
     {
         if(_hashMap == nullptr)
         {
-            throw std::out_of_range("hashMap is null");
+            throw std::invalid_argument("hashMap is null");
         }
         int index = _hash(key) & (_capacityOfArray - 1);
         for(int i = 0; i < _hashMap[index].size(); ++i)
