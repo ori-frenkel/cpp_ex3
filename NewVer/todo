@@ -1,2 +1,0 @@
-1. change the name of inner class iterator to const_iterator
-2. in the move constructor - in all the non-array just to _upperBound = other._upperbound or other.getUpperBound.
