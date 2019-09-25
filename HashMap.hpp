@@ -122,7 +122,10 @@ public:
                                 _upperBound(other.getUpperBound()), \
                                 _capacityOfArray(other._capacityOfArray), \
                                 _sizeOfArray(other._sizeOfArray), \
-                                _hashMap(std::move(other._hashMap)) {}
+                                _hashMap(std::move(other._hashMap))
+    {
+       other._hashMap = nullptr;
+    }
 
 
     /**
