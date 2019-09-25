@@ -271,7 +271,7 @@ public:
                 return _hashMap[index][i].second;
             }
         }
-        
+
         throw std::invalid_argument("at function must get a valid key");
     }
 
@@ -447,8 +447,8 @@ public:
      */
     bool operator == (const HashMap& other) const
     {
-        if(_sizeOfArray != other._sizeOfArray || _capacityOfArray != other.capacity() || \
-           _lowerBound != other._lowerBound || _upperBound != other._upperBound)
+        if(_sizeOfArray != other.size() || _capacityOfArray != other.capacity() || \
+           _lowerBound != other.getLowerBound() || _upperBound != other.getUpperBound())
         {
             return false;
         }
@@ -605,6 +605,10 @@ public:
             if((_currentLocation == other._currentLocation) && (_currentLocation == _endLocation))
             {
                 return true;
+            }
+            if(_currentLocation != other._currentLocation || _endLocation != other._endLocation)
+            {
+                return false;
             }
             return _arrOfAllTheItems[_currentLocation] == \
                                                other._arrOfAllTheItems[other._currentLocation];
