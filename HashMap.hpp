@@ -556,7 +556,7 @@ public:
             _hashMap = other._hashMap;
             _currentLocation = other._currentLocation;
             _arrOfAllTheItems = new std::pair<KeyT, ValueT>[other._capacityOfHash];
-            for(int i = 0; i < other._capacityOfHash; ++i)
+            for(int i = 0; i < other._endLocation; ++i)
             {
                 _arrOfAllTheItems[i] = other._arrOfAllTheItems[i];
             }
